@@ -8,3 +8,6 @@ pgadmin4:
           path: "/"
 postgresql:
   postgresqlPassword: postgres
+kubeview:
+  ingress:
+    enabled: true

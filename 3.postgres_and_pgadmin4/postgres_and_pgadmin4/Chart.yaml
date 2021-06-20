@@ -11,3 +11,6 @@ dependencies:
   - name: postgresql
     version: 10.5.0
     repository: https://charts.bitnami.com/bitnami
+  - name: kubeview
+    version: 0.1.20
+    repository: http://kubeview.benco.io/charts/

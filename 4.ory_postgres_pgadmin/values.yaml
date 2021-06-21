@@ -1,0 +1,23 @@
+pgadmin4:
+  ingress:
+    enabled: true
+    hosts:
+      - host: localhost
+        paths:
+        - pathType: Prefix
+          path: "/"
+
+postgresql:
+  postgresqlPassword: postgres
+
+kratos:
+  config:
+    dsn: postgres://postgres:postgresql@noxucloud-postgresql:5432/noxudb?sslmode=disable&max_conns=20&max_idle_conns=4
+    secrets:
+      session:
+        - dolore occaecat nostrud Ut
+        - sit et commodoaute ut voluptate consectetur Duis
+        
+kubeview:
+  ingress:
+    enabled: true

@@ -1,0 +1,15 @@
+dependencies:
+- name: pgadmin4
+  repository: https://helm.runix.net
+  version: 1.6.8
+- name: postgresql
+  repository: https://charts.bitnami.com/bitnami
+  version: 10.5.0
+- name: kratos
+  repository: https://k8s.ory.sh/helm/charts
+  version: 0.14.1
+- name: kubeview
+  repository: http://kubeview.benco.io/charts/
+  version: 0.1.20
+digest: sha256:97d329fc57ec27bece99551363e33f1e608fbab2f09a1399d403ba0b35ce1493
+generated: "2021-06-21T14:09:15.040003917+02:00"

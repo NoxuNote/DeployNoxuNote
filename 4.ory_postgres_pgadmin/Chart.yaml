@@ -13,7 +13,7 @@ dependencies:
     repository: https://charts.bitnami.com/bitnami
   - name: kratos
     version: 0.14.1
-    repository: https://k8s.ory.sh/helm/charts
+    repository: file://../2.basic_kratos
   - name: kubeview
     version: 0.1.20
     repository: http://kubeview.benco.io/charts/

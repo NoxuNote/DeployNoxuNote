@@ -6,10 +6,10 @@ dependencies:
   repository: https://charts.bitnami.com/bitnami
   version: 10.5.0
 - name: kratos
-  repository: https://k8s.ory.sh/helm/charts
+  repository: file://../2.basic_kratos
   version: 0.14.1
 - name: kubeview
   repository: http://kubeview.benco.io/charts/
   version: 0.1.20
-digest: sha256:97d329fc57ec27bece99551363e33f1e608fbab2f09a1399d403ba0b35ce1493
-generated: "2021-06-21T14:09:15.040003917+02:00"
+digest: sha256:9d75b3d1601c202a186756f7c83c94e8df5c3c5fd88f17acd1eb8f90ac20bff1
+generated: "2021-06-24T15:25:47.765280012+02:00"

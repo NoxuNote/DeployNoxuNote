@@ -9,15 +9,25 @@ pgadmin4:
 
 postgresql:
   postgresqlPassword: postgres
+  postgresqlDatabase: noxudb
+  primary:
+    priorityClassName: db
 
 kratos:
-  config:
-    dsn: postgres://postgres:postgresql@noxucloud-postgresql:5432/noxudb?sslmode=disable&max_conns=20&max_idle_conns=4
-    secrets:
-      session:
-        - dolore occaecat nostrud Ut
-        - sit et commodoaute ut voluptate consectetur Duis
-        
+  kratos:
+    autoMigrate: true
+    development: true
+    ingress:
+      public:
+        enabled: true
+      admin:
+        enabled: true
+    config:
+      dsn: postgres://postgres:postgres@noxucloud-postgresql:5432/noxudb?sslmode=disable&max_conns=20&max_idle_conns=4
+      secrets:
+        session:
+          - dolore occaecat nostrud Ut
+          - sit et commodoaute ut voluptate consectetur Duis
 kubeview:
   ingress:
     enabled: true

@@ -1,7 +1,0 @@
-kratos:
-  config:
-    dsn: sqlite://./db.sqlite?_fk=true
-    secrets:
-      session:
-        - dolore occaecat nostrud Ut
-        - sit et commodoaute ut voluptate consectetur Duis

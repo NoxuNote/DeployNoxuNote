@@ -1,0 +1,22 @@
+apiVersion: v2
+name: postgres-and-pgadmin4
+description: A Helm chart for Kubernetes
+type: application
+version: 0.1.0
+appVersion: 0.1.0
+dependencies:
+  - name: pgadmin4
+    version: 1.6.8
+    repository: https://helm.runix.net
+  - name: postgresql
+    version: 10.5.0
+    repository: https://charts.bitnami.com/bitnami
+  - name: kratos
+    version: 0.14.1
+    repository: file://../2.basic_kratos
+  - name: oathkeeper
+    version: 0.14.1
+    repository: https://k8s.ory.sh/helm/charts
+  - name: kubeview
+    version: 0.1.20
+    repository: http://kubeview.benco.io/charts/

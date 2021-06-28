@@ -1,0 +1,3 @@
+Noxucloud deployed !
+pgadmin login : {{ .Values.pgadmin4.env.email }}:{{ .Values.pgadmin4.env.password }}
+postgresql login : postgresql:{{ .Values.postgresql.global.postgresql.postgresqlPassword }}

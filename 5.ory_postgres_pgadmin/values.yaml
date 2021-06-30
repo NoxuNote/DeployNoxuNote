@@ -2,7 +2,7 @@ pgadmin4:
   ingress:
     enabled: true
     hosts:
-      - host: localhost
+      - host: pgadmin.$ORY_HOST
         paths:
         - pathType: Prefix
           path: "/"
@@ -32,8 +32,16 @@ kratos:
 oathkeeper:
   ingress:
     proxy:
+      hosts:
+      - host: $ORY_HOST
+        paths: 
+        - "/"
       enabled: true
     api:
+      hosts:
+      - host: api.$ORY_HOST
+        paths: 
+        - "/"
       enabled: true
   oathkeeper:
     accessRules: |
@@ -230,3 +238,7 @@ oathkeeper:
 kubeview:
   ingress:
     enabled: true
+    hosts:
+    - host: kubeview.$ORY_HOST
+      paths:
+      - "/"

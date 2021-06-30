@@ -43,7 +43,7 @@ oathkeeper:
           url: "http://kratos:4433"
           strip_path: /.ory/kratos/public
         match:
-          url: $BASE_URL/.ory/kratos/public/<**>"
+          url: "$ORY_PROTOCOL://$ORY_HOST/.ory/kratos/public/<**>"
           methods:
             - GET
             - POST
@@ -61,7 +61,7 @@ oathkeeper:
           preserve_host: true
           url: "http://kratos-selfservice-ui-node:4435"
         match:
-          url: $BASE_URL/<{error,recovery,verify,auth/*,**.css,**.js}{/,}>"
+          url: "$ORY_PROTOCOL://$ORY_HOST/<{error,recovery,verify,auth/*,**.css,**.js}{/,}>"
           methods:
             - GET
         authenticators:
@@ -75,7 +75,7 @@ oathkeeper:
           preserve_host: true
           url: "http://kratos-selfservice-ui-node:4435"
         match:
-          url: $BASE_URL/<{,debug,dashboard,settings}>"
+          url: "$ORY_PROTOCOL://$ORY_HOST/<{,debug,dashboard,settings}>"
           methods:
             - GET
         authenticators:
@@ -87,13 +87,13 @@ oathkeeper:
         errors:
           - handler: redirect
             config:
-              to: $BASE_URL/auth/login
+              to: "$ORY_PROTOCOL://$ORY_HOST/auth/login"
       - id: "noxunote:mynotesapi:public"
         upstream:
           preserve_host: true
           url: "http://mynotesapi:2268"
         match:
-          url: $BASE_URL/<{mynotes}>"
+          url: "$ORY_PROTOCOL://$ORY_HOST/<{mynotes}>"
           methods:
             - GET
         authenticators:
@@ -108,7 +108,7 @@ oathkeeper:
           preserve_host: true
           url: "http://mynotesapi:2268"
         match:
-          url: $BASE_URL/mynotes/<{account,notes,notes/*}>"
+          url: "$ORY_PROTOCOL://$ORY_HOST/mynotes/<{account,notes,notes/*}>"
           methods:
             - GET
             - POST
@@ -125,13 +125,13 @@ oathkeeper:
         errors:
           - handler: redirect
             config:
-              to: $BASE_URL/auth/login
+              to: "$ORY_PROTOCOL://$ORY_HOST/auth/login"
       - id: "myheavyfiles:myheavyfilesapi:protected"
         upstream:
           preserve_host: true
           url: "http://myheavyfilesapi:2267"
         match:
-          url: $BASE_URL/documents/<{,*}>"
+          url: "$ORY_PROTOCOL://$ORY_HOST/documents/<{,*}>"
           methods:
             - GET
             - POST
@@ -146,11 +146,13 @@ oathkeeper:
         errors:
           - handler: redirect
             config:
-              to: $BASE_URL/auth/login
+              to: "$ORY_PROTOCOL://$ORY_HOST/auth/login"
     config:
+      access_rules:
+        matching_strategy: glob
       log:
         level: warning
-        format: json
+        format: text
       serve:
         proxy:
           cors:
@@ -176,8 +178,9 @@ oathkeeper:
           - json
         handlers:
           redirect:
+            enabled: true
             config:
-              to: $BASE_URL
+              to: "$ORY_PROTOCOL://$ORY_HOST"
               when:
                 - error:
                     - unauthorized
@@ -213,7 +216,10 @@ oathkeeper:
         noop:
           enabled: true
         id_token:
-          enabled: false
+          enabled: true
+          config:
+            issuer_url: "$ORY_PROTOCOL://$ORY_HOST"
+            jwks_url: overriden_value
         header:
           enabled: true
           config:

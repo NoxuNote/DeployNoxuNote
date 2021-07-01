@@ -30,6 +30,8 @@ kratos:
           - sit et commodoaute ut voluptate consectetur Duis
 
 oathkeeper:
+  maester:
+    enabled: false
   ingress:
     proxy:
       hosts:

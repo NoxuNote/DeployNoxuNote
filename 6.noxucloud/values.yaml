@@ -26,47 +26,49 @@ kratos:
       admin:
         enabled: true
     config:
+      version: v0.5.5-alpha.1
+      serve:
+        public:
+          base_url: $ORY_PROTOCOL://$ORY_HOST/.ory/kratos/public/
       dsn: postgres://postgres:postgres@noxucloud-postgresql:5432/noxudb?sslmode=disable&max_conns=20&max_idle_conns=4
       secrets:
         session:
           - dolore occaecat nostrud Ut
           - sit et commodoaute ut voluptate consectetur Duis
+        cookie:
+          - btU93N8tb6T7@#bDSJHhzAdSQ77
       selfservice:
+        methods:
+          password:
+            enabled: true
         default_browser_return_url: $ORY_PROTOCOL://$ORY_HOST/dashboard
-
-
-# COPY FROM
----
-  kratos:
-    depends_on:
-      - kratos-migrate
-      - postgres
-    image: oryd/kratos:v0.6.0-alpha.2
-    restart: unless-stopped
-    ports:
-      - "4433:4433" # public
-      - "4434:4434" # admin
-    environment:
-      - DSN=postgres://postgres:admin@postgres:5432/noxudb?sslmode=disable&max_conns=20&max_idle_conns=4
-      - LOG_LEVEL=warning
-      - SELFSERVICE_WHITELISTED_RETURN_URLS=${BASE_URL}/
-      - SERVE_PUBLIC_BASE_URL=${BASE_URL}/.ory/kratos/public/
-      - SELFSERVICE_DEFAULT_BROWSER_RETURN_URL=${BASE_URL}/
-      - SELFSERVICE_FLOWS_LOGIN_UI_URL=${BASE_URL}/auth/login
-      - SELFSERVICE_FLOWS_REGISTRATION_UI_URL=${BASE_URL}/auth/registration
-      - SELFSERVICE_FLOWS_ERROR_UI_URL=${BASE_URL}/error
-      - SELFSERVICE_FLOWS_RECOVERY_UI_URL=${BASE_URL}/recovery
-      - SELFSERVICE_FLOWS_SETTINGS_UI_URL=${BASE_URL}/settings
-      - SELFSERVICE_FLOWS_VERIFICATION_UI_URL=${BASE_URL}/verify
-      - SELFSERVICE_FLOWS_LOGOUT_AFTER_DEFAULT_BROWSER_RETURN_URL=${BASE_URL}/auth/login
-      - SELFSERVICE_FLOWS_VERIFICATION_AFTER_DEFAULT_BROWSER_RETURN_URL=${BASE_URL}/
-
----
-USING: https://www.ory.sh/kratos/docs/reference/configuration/
-
-
-
-
+        flows:
+          login:
+            lifespan: 10m
+            ui_url: $ORY_PROTOCOL://$ORY_HOST/auth/login
+          registration:
+            lifespan: 10m
+            after:
+              password:
+                hooks:
+                  - hook: session
+            ui_url: $ORY_PROTOCOL://$ORY_HOST/auth/registration
+          error:
+            ui_url: $ORY_PROTOCOL://$ORY_HOST/error
+          recovery:
+            enabled: true
+            ui_url: $ORY_PROTOCOL://$ORY_HOST/recovery
+          settings:
+            privileged_session_max_age: 15m
+            ui_url: $ORY_PROTOCOL://$ORY_HOST/settings
+          verification:
+            enabled: true
+            ui_url: $ORY_PROTOCOL://$ORY_HOST/verify
+            after:
+              default_browser_return_url: $ORY_PROTOCOL://$ORY_HOST/
+          logout:
+            after:
+              default_browser_return_url: $ORY_PROTOCOL://$ORY_HOST/auth/login
 
 kratos-selfservice-ui-node:
   kratosAdminUrl: http://noxucloud-kratos-admin/
@@ -74,7 +76,6 @@ kratos-selfservice-ui-node:
   kratosBrowserUrl: $ORY_PROTOCOL://$ORY_HOST/.ory/kratos/public
   baseUrl: ""
   jwksUrl: http://noxucloud-oathkeeper-api:4456/.well-known/jwks.json
-  securityMode: cookie
 
 oathkeeper:
   maester:

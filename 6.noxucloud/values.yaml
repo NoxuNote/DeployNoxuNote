@@ -17,6 +17,8 @@ postgresql:
     priorityClassName: db
 
 kratos:
+  image:
+   tag: v0.6.3-alpha.1
   kratos:
     autoMigrate: true
     development: true

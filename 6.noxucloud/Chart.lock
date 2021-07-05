@@ -5,6 +5,9 @@ dependencies:
 - name: postgresql
   repository: https://charts.bitnami.com/bitnami
   version: 10.5.0
+- name: mynotesapi
+  repository: ""
+  version: 0.2.2
 - name: kratos
   repository: file://../2.basic_kratos
   version: 0.14.1
@@ -12,10 +15,10 @@ dependencies:
   repository: https://k8s.ory.sh/helm/charts
   version: 0.14.1
 - name: kratos-selfservice-ui-node
-  repository: https://k8s.ory.sh/helm/charts
+  repository: ""
   version: 0.15.1
 - name: kubeview
   repository: http://kubeview.benco.io/charts/
   version: 0.1.20
-digest: sha256:e019d2167cbcb8b5f6aab01d833741dc6b635cf2fc437288fefabad9d1b2274a
-generated: "2021-07-02T12:11:57.765521562+02:00"
+digest: sha256:55b614da4cf5b4478f3293928199c08e58379adba7558652ec0918ee70a09dd5
+generated: "2021-07-05T17:30:59.189783205+02:00"

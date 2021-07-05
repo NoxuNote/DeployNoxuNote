@@ -16,6 +16,14 @@ postgresql:
   primary:
     priorityClassName: db
 
+mynotesapi:
+  env: prod
+  db_host: noxucloud-postgresql
+  db_port: 5432
+  db_user: postgres
+  db_password: postgres
+  db_db: noxudb
+
 kratos:
   image:
    tag: v0.6.3-alpha.1
@@ -151,7 +159,7 @@ oathkeeper:
       - id: "noxunote:mynotesapi:public"
         upstream:
           preserve_host: true
-          url: "http://noxucloud-mynotesapi:2268"
+          url: "http://noxucloud-mynotesapi"
         match:
           url: "$ORY_PROTOCOL://$ORY_HOST/<{mynotes}>"
           methods:
@@ -166,7 +174,7 @@ oathkeeper:
       - id: "noxunote:mynotesapi:protected"
         upstream:
           preserve_host: true
-          url: "http://noxucloud-mynotesapi:2268"
+          url: "http://noxucloud-mynotesapi"
         match:
           url: "$ORY_PROTOCOL://$ORY_HOST/mynotes/<{account,notes,notes/*}>"
           methods:
@@ -189,7 +197,7 @@ oathkeeper:
       - id: "myheavyfiles:myheavyfilesapi:protected"
         upstream:
           preserve_host: true
-          url: "http://noxucloud-myheavyfilesapi:2267"
+          url: "http://noxucloud-myheavyfilesapi"
         match:
           url: "$ORY_PROTOCOL://$ORY_HOST/documents/<{,*}>"
           methods:
@@ -219,6 +227,7 @@ oathkeeper:
             enabled: true
             allowed_origins:
               - "http://127.0.0.1:4200"
+              - "http://localhost:4200"
               - "https://*.noxunote.fr"
             allowed_methods:
               - POST

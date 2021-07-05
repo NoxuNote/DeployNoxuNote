@@ -5,14 +5,22 @@
 replicaCount: 1
 
 image:
-  repository: mynotesapi
+  repository: noxunote/mynotesapi
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "latest"
+  tag: "0.2.2"
 
 imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
+
+# Env configuration
+env: prod
+db_host: localhost
+db_port: 5432
+db_user: postgres
+db_password: postgres
+db_db: noxucloud
 
 serviceAccount:
   # Specifies whether a service account should be created

@@ -11,6 +11,8 @@ dependencies:
   - name: postgresql
     version: 10.5.0
     repository: https://charts.bitnami.com/bitnami
+  - name: mynotesapi
+    version: 0.2.2
   - name: kratos
     version: 0.14.1
     repository: file://../2.basic_kratos

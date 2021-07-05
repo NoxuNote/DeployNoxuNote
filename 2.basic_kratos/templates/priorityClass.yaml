@@ -11,5 +11,5 @@ kind: PriorityClass
 metadata:
   name: normal
 value: 100
-globalDefault: false
+globalDefault: true
 description: "This priority class should be used for normal pods only"

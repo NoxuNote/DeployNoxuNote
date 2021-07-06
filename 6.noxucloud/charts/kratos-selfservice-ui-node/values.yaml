@@ -7,7 +7,7 @@ replicaCount: 1
 image:
   repository: noxunote/selfservice-ui
   tag: latest
-  pullPolicy: IfNotPresent
+  pullPolicy: Always
 
 imagePullSecrets: []
 nameOverride: ""

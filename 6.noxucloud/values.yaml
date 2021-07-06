@@ -37,6 +37,9 @@ kratos:
         enabled: true
     config:
       version: v0.5.5-alpha.1
+      log:
+        leak_sensitive_values: true
+        level: trace
       serve:
         public:
           base_url: $ORY_PROTOCOL://$ORY_HOST/.ory/kratos/public/
@@ -51,6 +54,9 @@ kratos:
         methods:
           password:
             enabled: true
+        whitelisted_return_urls:
+          - $ORY_PROTOCOL://$ORY_HOST/dashboard
+          - $ORY_PROTOCOL://$ORY_HOST/
         default_browser_return_url: $ORY_PROTOCOL://$ORY_HOST/dashboard
         flows:
           login:
@@ -86,6 +92,7 @@ kratos-selfservice-ui-node:
   kratosBrowserUrl: $ORY_PROTOCOL://$ORY_HOST/.ory/kratos/public
   baseUrl: ""
   jwksUrl: http://noxucloud-oathkeeper-api:4456/.well-known/jwks.json
+  securityMode: cookie
 
 oathkeeper:
   maester:
@@ -141,7 +148,7 @@ oathkeeper:
       - id: "ory:kratos-selfservice-ui-node:protected"
         upstream:
           preserve_host: true
-          url: "http://noxucloud-selfservice-ui"
+          url: "http://noxucloud-kratos-selfservice-ui-node"
         match:
           url: "$ORY_PROTOCOL://$ORY_HOST/<{,debug,dashboard,settings}>"
           methods:
@@ -226,6 +233,7 @@ oathkeeper:
           cors:
             enabled: true
             allowed_origins:
+              - "http://localhost"
               - "http://127.0.0.1:4200"
               - "http://localhost:4200"
               - "https://*.noxunote.fr"
@@ -249,7 +257,7 @@ oathkeeper:
           redirect:
             enabled: true
             config:
-              to: "$ORY_PROTOCOL://$ORY_HOST"
+              to: "$ORY_PROTOCOL://$ORY_HOST/auth/login"
               when:
                 - error:
                     - unauthorized
@@ -270,7 +278,7 @@ oathkeeper:
         cookie_session:
           enabled: true
           config:
-            check_session_url: http://kratos:4433/sessions/whoami
+            check_session_url: http://noxucloud-kratos-public/sessions/whoami
             preserve_path: true
             extra_from: "@this"
             subject_from: "identity.id"
@@ -287,8 +295,12 @@ oathkeeper:
         id_token:
           enabled: true
           config:
-            issuer_url: "$ORY_PROTOCOL://$ORY_HOST"
-            jwks_url: overriden_value
+            issuer_url: '$ORY_PROTOCOL://$ORY_HOST/'
+            jwks_url: 'file:///etc/secrets/mutator.id_token.jwks.json'
+            claims: |
+              {
+                "session": {{ .Extra | toJson }}
+              }
         header:
           enabled: true
           config:

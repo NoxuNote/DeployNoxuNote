@@ -1,0 +1,6 @@
+Noxucloud deployed !
+pgadmin login : {{ .Values.pgadmin4.env.email }}:{{ .Values.pgadmin4.env.password }}
+postgresql login : postgres:{{ .Values.postgresql.postgresqlPassword }}
+grafana login : admin
+grafana password :
+$ kubectl get secret --namespace default noxucloud-grafana -o jsonpath="{.data.admin-password}" | base64 --decode ; echo

@@ -1,0 +1,29 @@
+apiVersion: v2
+name: noxucloud
+description: Helm chart for deploying NoxuNote network to k8s
+type: application
+version: 0.1.0
+appVersion: 0.1.0
+dependencies:
+  - name: pgadmin4
+    version: 1.6.8
+    repository: https://helm.runix.net
+  - name: postgresql
+    version: 10.5.0
+    repository: https://charts.bitnami.com/bitnami
+  - name: mynotesapi
+    version: 0.2.2
+  - name: kratos
+    version: 0.14.1
+    repository: file://../2.basic_kratos
+  - name: oathkeeper
+    version: 0.14.1
+    repository: https://k8s.ory.sh/helm/charts
+  - name: kratos-selfservice-ui-node
+    version: 0.15.1
+  - name: kubeview
+    version: 0.1.20
+    repository: http://kubeview.benco.io/charts/
+  - name: kube-prometheus-stack
+    version: 16.12.1
+    repository: https://prometheus-community.github.io/helm-charts

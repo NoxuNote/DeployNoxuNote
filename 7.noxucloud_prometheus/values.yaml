@@ -1,0 +1,346 @@
+ORY_HOST: $ORY_HOST
+ORY_PROTOCOL: $ORY_PROTOCOL
+
+pgadmin4:
+  ingress:
+    enabled: true
+    hosts:
+      - host: pgadmin.$ORY_HOST
+        paths:
+        - pathType: Prefix
+          path: "/"
+
+postgresql:
+  postgresqlPassword: postgres
+  postgresqlDatabase: noxudb
+  primary:
+    priorityClassName: db
+
+mynotesapi:
+  env: prod
+  db_host: noxucloud-postgresql
+  db_port: 5432
+  db_user: postgres
+  db_password: postgres
+  db_db: noxudb
+
+kratos:
+  image:
+   tag: v0.6.3-alpha.1
+  kratos:
+    autoMigrate: true
+    development: true
+    ingress:
+      public:
+        enabled: true
+      admin:
+        enabled: true
+    config:
+      version: v0.5.5-alpha.1
+      log:
+        leak_sensitive_values: true
+        level: trace
+      serve:
+        public:
+          base_url: $ORY_PROTOCOL://$ORY_HOST/.ory/kratos/public/
+      dsn: postgres://postgres:postgres@noxucloud-postgresql:5432/noxudb?sslmode=disable&max_conns=20&max_idle_conns=4
+      secrets:
+        session:
+          - dolore occaecat nostrud Ut
+          - sit et commodoaute ut voluptate consectetur Duis
+        cookie:
+          - btU93N8tb6T7@#bDSJHhzAdSQ77
+      selfservice:
+        methods:
+          password:
+            enabled: true
+        whitelisted_return_urls:
+          - $ORY_PROTOCOL://$ORY_HOST/dashboard
+          - $ORY_PROTOCOL://$ORY_HOST/
+        default_browser_return_url: $ORY_PROTOCOL://$ORY_HOST/dashboard
+        flows:
+          login:
+            lifespan: 10m
+            ui_url: $ORY_PROTOCOL://$ORY_HOST/auth/login
+          registration:
+            lifespan: 10m
+            after:
+              password:
+                hooks:
+                  - hook: session
+            ui_url: $ORY_PROTOCOL://$ORY_HOST/auth/registration
+          error:
+            ui_url: $ORY_PROTOCOL://$ORY_HOST/error
+          recovery:
+            enabled: true
+            ui_url: $ORY_PROTOCOL://$ORY_HOST/recovery
+          settings:
+            privileged_session_max_age: 15m
+            ui_url: $ORY_PROTOCOL://$ORY_HOST/settings
+          verification:
+            enabled: true
+            ui_url: $ORY_PROTOCOL://$ORY_HOST/verify
+            after:
+              default_browser_return_url: $ORY_PROTOCOL://$ORY_HOST/
+          logout:
+            after:
+              default_browser_return_url: $ORY_PROTOCOL://$ORY_HOST/auth/login
+
+kratos-selfservice-ui-node:
+  kratosAdminUrl: http://noxucloud-kratos-admin/
+  kratosPublicUrl: http://noxucloud-kratos-public/
+  kratosBrowserUrl: $ORY_PROTOCOL://$ORY_HOST/.ory/kratos/public
+  baseUrl: ""
+  jwksUrl: http://noxucloud-oathkeeper-api:4456/.well-known/jwks.json
+  securityMode: cookie
+
+oathkeeper:
+  maester:
+    enabled: false
+  ingress:
+    proxy:
+      hosts:
+      - host: $ORY_HOST
+        paths: 
+        - "/"
+      enabled: true
+    api:
+      hosts:
+      - host: api.$ORY_HOST
+        paths: 
+        - "/"
+      enabled: true
+  oathkeeper:
+    accessRules: |
+      - id: "ory:kratos:public"
+        upstream:
+          preserve_host: true
+          url: "http://noxucloud-kratos-public"
+          strip_path: /.ory/kratos/public
+        match:
+          url: "$ORY_PROTOCOL://$ORY_HOST/.ory/kratos/public/<**>"
+          methods:
+            - GET
+            - POST
+            - PUT
+            - DELETE
+            - PATCH
+        authenticators:
+          - handler: noop
+        authorizer:
+          handler: allow
+        mutators:
+          - handler: noop
+      - id: "ory:kratos-selfservice-ui-node:anonymous"
+        upstream:
+          preserve_host: true
+          url: "http://noxucloud-kratos-selfservice-ui-node"
+        match:
+          url: "$ORY_PROTOCOL://$ORY_HOST/<{error,recovery,verify,auth/*,**.css,**.js}{/,}>"
+          methods:
+            - GET
+        authenticators:
+          - handler: anonymous
+        authorizer:
+          handler: allow
+        mutators:
+          - handler: noop
+      - id: "ory:kratos-selfservice-ui-node:protected"
+        upstream:
+          preserve_host: true
+          url: "http://noxucloud-kratos-selfservice-ui-node"
+        match:
+          url: "$ORY_PROTOCOL://$ORY_HOST/<{,debug,dashboard,settings}>"
+          methods:
+            - GET
+        authenticators:
+          - handler: cookie_session
+        authorizer:
+          handler: allow
+        mutators:
+          - handler: id_token
+        errors:
+          - handler: redirect
+            config:
+              to: "$ORY_PROTOCOL://$ORY_HOST/auth/login"
+      - id: "noxunote:mynotesapi:public"
+        upstream:
+          preserve_host: true
+          url: "http://noxucloud-mynotesapi"
+        match:
+          url: "$ORY_PROTOCOL://$ORY_HOST/<{mynotes}>"
+          methods:
+            - GET
+        authenticators:
+          - handler: anonymous
+        authorizer:
+          handler: allow
+        mutators:
+          - handler: noop
+      
+      - id: "noxunote:mynotesapi:protected"
+        upstream:
+          preserve_host: true
+          url: "http://noxucloud-mynotesapi"
+        match:
+          url: "$ORY_PROTOCOL://$ORY_HOST/mynotes/<{account,notes,notes/*}>"
+          methods:
+            - GET
+            - POST
+            - PUT
+            - DELETE
+            - PATCH
+        authenticators:
+          - handler: cookie_session
+        authorizer:
+          handler: allow
+        mutators:
+          - handler: id_token
+          - handler: header
+        errors:
+          - handler: redirect
+            config:
+              to: "$ORY_PROTOCOL://$ORY_HOST/auth/login"
+      - id: "myheavyfiles:myheavyfilesapi:protected"
+        upstream:
+          preserve_host: true
+          url: "http://noxucloud-myheavyfilesapi"
+        match:
+          url: "$ORY_PROTOCOL://$ORY_HOST/documents/<{,*}>"
+          methods:
+            - GET
+            - POST
+            - DELETE
+        authenticators:
+          - handler: cookie_session
+        authorizer:
+          handler: allow
+        mutators:
+          - handler: id_token
+          - handler: header
+        errors:
+          - handler: redirect
+            config:
+              to: "$ORY_PROTOCOL://$ORY_HOST/auth/login"
+    config:
+      access_rules:
+        matching_strategy: glob
+      log:
+        level: warning
+        format: text
+      serve:
+        proxy:
+          cors:
+            enabled: true
+            allowed_origins:
+              - "http://localhost"
+              - "http://127.0.0.1:4200"
+              - "http://localhost:4200"
+              - "https://*.noxunote.fr"
+            allowed_methods:
+              - POST
+              - GET
+              - PUT
+              - PATCH
+              - DELETE
+            allowed_headers:
+              - Authorization
+              - Content-Type
+            exposed_headers:
+              - Content-Type
+            allow_credentials: true
+            debug: true
+      errors:
+        fallback:
+          - json
+        handlers:
+          redirect:
+            enabled: true
+            config:
+              to: "$ORY_PROTOCOL://$ORY_HOST/auth/login"
+              when:
+                - error:
+                    - unauthorized
+                    - forbidden
+                  request:
+                    header:
+                      accept:
+                        - text/html
+          json:
+            enabled: true
+            config:
+              verbose: true
+      authenticators:
+        anonymous:
+          enabled: true
+          config:
+            subject: guest
+        cookie_session:
+          enabled: true
+          config:
+            check_session_url: http://noxucloud-kratos-public/sessions/whoami
+            preserve_path: true
+            extra_from: "@this"
+            subject_from: "identity.id"
+            only:
+              - ory_kratos_session
+        noop:
+          enabled: true
+      authorizers:
+        allow:
+          enabled: true
+      mutators:
+        noop:
+          enabled: true
+        id_token:
+          enabled: true
+          config:
+            issuer_url: '$ORY_PROTOCOL://$ORY_HOST/'
+            jwks_url: 'file:///etc/secrets/mutator.id_token.jwks.json'
+            claims: |
+              {
+                "session": {{ .Extra | toJson }}
+              }
+        header:
+          enabled: true
+          config:
+            headers:
+              X-Api-User-Id: "{{ print .Extra.identity.id }}"
+    
+
+kubeview:
+  ingress:
+    enabled: true
+    hosts:
+    - host: kubeview.$ORY_HOST
+      paths:
+      - "/"
+
+kube-prometheus-stack:
+  prometheus:
+    ingress:
+      enabled: true
+      ingressClassName: nginx
+      pathType: ImplementationSpecific
+      hosts:
+        - prometheus.$ORY_HOST
+      paths:
+        - "/"
+  alertmanager:
+    ingress:
+      enabled: true
+      ingressClassName: nginx
+      pathType: ImplementationSpecific
+      hosts:
+        - alertmanager.$ORY_HOST
+      paths:
+        - "/"
+  grafana:
+    ingress:
+      enabled: true
+      ingressClassName: nginx
+      pathType: ImplementationSpecific
+      hosts:
+        - grafana.$ORY_HOST
+      paths:
+        - "/"

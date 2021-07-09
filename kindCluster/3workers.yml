@@ -3,6 +3,9 @@ kind: Cluster
 apiVersion: kind.x-k8s.io/v1alpha4
 nodes:
 - role: control-plane
+  extraMounts:
+   - hostPath: ./ca.crt
+     containerPath: "/etc/docker/certs.d/docker_registry_proxy/ca.crt"
   kubeadmConfigPatches:
   - |
     kind: InitConfiguration

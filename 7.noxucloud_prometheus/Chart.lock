@@ -23,5 +23,8 @@ dependencies:
 - name: kube-prometheus-stack
   repository: https://prometheus-community.github.io/helm-charts
   version: 16.12.1
-digest: sha256:40d9241b1c122f74be14b3e051192ca10e179a5ae4dacca02caed6174543a659
-generated: "2021-07-20T10:47:56.026904836+02:00"
+- name: prometheus-postgres-exporter
+  repository: https://prometheus-community.github.io/helm-charts
+  version: 2.3.5
+digest: sha256:8b401aaca62fe2ad25dd37070991a0e9a4842ca8018ee20a12c0a83f5802a257
+generated: "2021-07-20T16:15:43.411218649+02:00"

@@ -16,6 +16,14 @@ postgresql:
   primary:
     priorityClassName: db
 
+prometheus-postgres-exporter:
+  config:
+    datasource:
+      host: noxucloud-postgresql
+      user: postgres
+      password: postgres
+      database: noxudb
+
 mynotesapi:
   env: prod
   db_host: noxucloud-postgresql
@@ -339,6 +347,12 @@ kube-prometheus-stack:
         static_configs:
           # The target needs to match what you've configured above
           - targets: ['noxucloud-oathkeeper-prometheus:9000']
+      - job_name: 'postgres'
+        scrape_interval: 15s
+        metrics_path: /metrics
+        static_configs:
+          # The target needs to match what you've configured above
+          - targets: ['noxucloud-prometheus-postgres-exporter:80']
     ingress:
       enabled: true
       ingressClassName: nginx

@@ -12,8 +12,8 @@ dependencies:
   repository: file://../2.basic_kratos
   version: 0.14.1
 - name: oathkeeper
-  repository: https://k8s.ory.sh/helm/charts
-  version: 0.14.1
+  repository: file://../ory_k8s/helm/charts/oathkeeper
+  version: 0.14.0
 - name: kratos-selfservice-ui-node
   repository: ""
   version: 0.15.1
@@ -23,5 +23,5 @@ dependencies:
 - name: kube-prometheus-stack
   repository: https://prometheus-community.github.io/helm-charts
   version: 16.12.1
-digest: sha256:3464243c31de1f35a214a2da7e696a8ea56749af069dee703a09cf3bd42ee1ec
-generated: "2021-07-07T10:35:00.942923548+02:00"
+digest: sha256:40d9241b1c122f74be14b3e051192ca10e179a5ae4dacca02caed6174543a659
+generated: "2021-07-20T10:47:56.026904836+02:00"

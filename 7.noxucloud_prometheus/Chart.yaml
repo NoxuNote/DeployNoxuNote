@@ -18,7 +18,8 @@ dependencies:
     repository: file://../2.basic_kratos
   - name: oathkeeper
     version: 0.14.1
-    repository: https://k8s.ory.sh/helm/charts
+    # repository: https://k8s.ory.sh/helm/charts
+    repository: file://../ory_k8s/helm/charts/oathkeeper
   - name: kratos-selfservice-ui-node
     version: 0.15.1
   - name: kubeview

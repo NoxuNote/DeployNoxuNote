@@ -1,0 +1,3 @@
+[submodule "ory_k8s"]
+	path = ory_k8s
+	url = https://github.com/ory/k8s

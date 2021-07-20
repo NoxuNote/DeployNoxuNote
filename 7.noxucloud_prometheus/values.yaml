@@ -27,6 +27,12 @@ mynotesapi:
 kratos:
   image:
    tag: v0.6.3-alpha.1
+     # service:
+     #   admin:
+     #     annotations:
+     #       prometheus.io/scrape: 'true'
+     #       prometheus.io/port: '80'
+     #       prometheus.io/path: '/metrics/prometheus'
   kratos:
     autoMigrate: true
     development: true
@@ -318,6 +324,21 @@ kubeview:
 
 kube-prometheus-stack:
   prometheus:
+    prometheusSpec:
+      logLevel: debug
+      additionalScrapeConfigs:
+      - job_name: 'kratos'
+        scrape_interval: 15s
+        metrics_path: /metrics/prometheus
+        static_configs:
+          # The target needs to match what you've configured above
+          - targets: ['noxucloud-kratos-admin:80']
+      - job_name: 'oathkeeper'
+        scrape_interval: 15s
+        metrics_path: /metrics
+        static_configs:
+          # The target needs to match what you've configured above
+          - targets: ['noxucloud-oathkeeper-prometheus:9000']
     ingress:
       enabled: true
       ingressClassName: nginx

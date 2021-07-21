@@ -23,6 +23,13 @@ prometheus-postgres-exporter:
       user: postgres
       password: postgres
       database: noxudb
+    queries: |
+      noxunote_accounts_count:
+        query: 'SELECT count(*) FROM "Accounts"'
+        metrics:
+          - count:
+              usage: "COUNTER"
+              description: "Number of created NoxuNote accounts"
 
 mynotesapi:
   env: prod

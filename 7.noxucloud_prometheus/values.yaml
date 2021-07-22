@@ -24,13 +24,60 @@ prometheus-postgres-exporter:
       password: postgres
       database: noxudb
     queries: |
-      noxunote_accounts_count:
+      noxunote_accounts:
         query: 'SELECT count(*) FROM "Accounts"'
         metrics:
           - count:
               usage: "COUNTER"
               description: "Number of created NoxuNote accounts"
-
+      noxunote_notes:
+        query: 'SELECT count(*) FROM "NoteMetadata"'
+        metrics:
+          - count:
+              usage: "COUNTER"
+              description: "Number of created notes"
+      noxunote_last_edited_note:
+        query: 'SELECT "updatedAt" FROM "NoteContents" ORDER BY "updatedAt" DESC LIMIT 1'
+        metrics:
+          - date:
+              usage: "LABEL"
+              description: "Last edited note date"
+      noxunote_active_sessions:
+        query: 'SELECT count(*) FROM "sessions" WHERE "active"=true'
+        metrics:
+          - count:
+              usage: "GAUGE"
+              description: "Number of active sessions"
+      noxunote_total_sessions:
+        query: 'SELECT count(*) FROM "sessions"'
+        metrics:
+          - count:
+              usage: "COUNTER"
+              description: "Number of total opened sessions"
+      noxunote_pending_mails:
+        query: 'SELECT count(*) FROM "courier_messages" WHERE "status"=1'
+        metrics:
+          - count:
+              usage: "GAUGE"
+              description: "Number of total pending mails"
+      noxunote_active_login_flows:
+        query: 'SELECT count(*) FROM "selfservice_login_flows" WHERE "expires_at" > NOW()'
+        metrics:
+          - count:
+              usage: "GAUGE"
+              description: "Number of active login flows"
+      noxunote_total_login_flows:
+        query: 'SELECT count(*) FROM "selfservice_login_flows"'
+        metrics:
+          - count:
+              usage: "COUNTER"
+              description: "Number of total login flows"
+      noxunote_total_recovery_flows:
+        query: 'SELECT count(*) FROM "selfservice_recovery_flows"'
+        metrics:
+          - count:
+              usage: "COUNTER"
+              description: "Number of total recovery flows"
 mynotesapi:
   env: prod
   db_host: noxucloud-postgresql

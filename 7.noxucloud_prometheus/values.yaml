@@ -251,7 +251,7 @@ oathkeeper:
           preserve_host: true
           url: "http://noxucloud-mynotesapi"
         match:
-          url: "$ORY_PROTOCOL://$ORY_HOST/mynotes/<{account,notes,notes/*}>"
+          url: "$ORY_PROTOCOL://$ORY_HOST/mynotes/<{notes,notes/*,notes/*/content}>"
           methods:
             - GET
             - POST

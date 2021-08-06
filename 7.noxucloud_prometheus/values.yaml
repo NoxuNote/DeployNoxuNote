@@ -204,7 +204,7 @@ oathkeeper:
           preserve_host: true
           url: "http://noxucloud-kratos-selfservice-ui-node"
         match:
-          url: "$ORY_PROTOCOL://$ORY_HOST/<{error,recovery,verify,auth/*,**.css,**.js}{/,}>"
+          url: "$ORY_PROTOCOL://$ORY_HOST/<{error,recovery,verify,auth/*,*.css,*.js}{/,}>"
           methods:
             - GET
         authenticators:
@@ -236,7 +236,7 @@ oathkeeper:
           preserve_host: true
           url: "http://noxucloud-mynotesapi"
         match:
-          url: "$ORY_PROTOCOL://$ORY_HOST/<{mynotes}>"
+          url: "$ORY_PROTOCOL://$ORY_HOST/mynotes<{/,/docs,/docs/**,/api-docs,/api-docs/**}>"
           methods:
             - GET
         authenticators:
